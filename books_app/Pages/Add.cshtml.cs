@@ -1,6 +1,9 @@
+using books_app.DAL.Abstracts;
 using books_app.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using books_app.DAL.Entities;
+using System.Linq;
 
 namespace books_app.Pages
 {
@@ -8,58 +11,46 @@ namespace books_app.Pages
     {
         [BindProperty]
         public AuthorModel Author { get; set; }
+        [BindProperty]
         public BookModel Book { get; set; }
+        private readonly IAuthorRepository _authorRepository;
+        private readonly IBookRepository _bookRepository;
 
-        // Author
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime BirthDate { get; set; }
-
-        // Book
-        public string Title { get; set; }
-        public string ISBN { get; set; }
-        public DateTime PublishYear { get; set; }
-        public string Price { get; set; }
-        public int AuthorId { get; set; }
+        public AddModel(IAuthorRepository authorRepository, IBookRepository bookRepository)
+        {
+            _authorRepository = authorRepository;
+            _bookRepository = bookRepository;
+        }
 
         public void OnGet()
         {
-            // Author
-            FirstName = string.Empty;
-            LastName = string.Empty;
-            BirthDate = DateTime.Now;
-
-            // Book
-            Title = string.Empty;
-            ISBN = string.Empty;
-            PublishYear = DateTime.Now;
-            Price = string.Empty;
-            AuthorId = 0;
+            Book = new BookModel();
+            Author = new AuthorModel();
         }
 
         public void OnPostSaveAuthor()
         {
-            if (!ModelState.IsValid)
+            var author = new Author
             {
-                return;
-            }
-            FirstName = Author.FirstName;
-            LastName = Author.LastName;
-            BirthDate = Author.DateOfBirth;
+                FirstName = Author.FirstName,
+                LastName = Author.LastName,
+                DateOfBirth = Author.DateOfBirth
+            };
+            _authorRepository.AddAuthor(author);
         }
 
         public void OnPostSaveBook()
         {
-            if (!ModelState.IsValid)
+             var book = new Book
             {
-                return;
-            }
+                Title = Book.Title,
+                ISBN = Book.ISBN,
+                PublishYear = Book.PublishYear,
+                Price = Book.Price,
+                AuthorId = Book.AuthorId
+            };
 
-            Title = Book.Title;
-            ISBN = Book.ISBN;
-            PublishYear = Book.PublishYear;
-            Price = Book.Price;
-            AuthorId = Book.AuthorId;
+            _bookRepository.AddBook(book);
         }
     }
 }
