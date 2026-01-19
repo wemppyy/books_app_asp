@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="books_app.DAL/books_app.DAL.csproj" />
+  <Project Path="books_app/books_app.csproj" />
+</Solution>

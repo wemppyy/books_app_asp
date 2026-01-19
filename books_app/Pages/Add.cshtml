@@ -1,0 +1,50 @@
+﻿@page
+@model books_app.Pages.AddModel
+@{
+}
+
+<h1>Add</h1>
+
+<h2>Add Author</h2>
+<form method="post" action="">
+    <div>
+        <label for="firstName">FirstName:</label>
+        <input type="text" id="firstName" asp-for="Author.FirstName" required minlength="2" />
+    </div>
+    <div>
+        <label for="lastName">LastName:</label>
+        <input type="text" id="lastName" asp-for="Author.LastName" required minlength="2" />
+    </div>
+    <div>
+        <label for="birthDate">BirthDate:</label>
+        <input type="date" id="birthDate" asp-for="Author.DateOfBirth" required />
+    </div>
+    <button type="submit" asp-page-handler="SaveAuthor">Save Author</button>
+</form>
+
+<h2>Add Book</h2>
+<form method="post" action="">
+    <div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="Title" required minlength="2" />
+    </div>
+    <div>
+        <label for="isbn">ISBN:</label>
+        <input type="text" id="isbn" name="ISBN" required pattern="978-\d{10}" />
+    </div>
+    <div>
+        <label for="publishYear">PublishYear:</label>
+        <input type="number" id="publishYear" name="PublishYear" required min="1450" max="2025" />
+    </div>
+    <div>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="Price" min="0" step="0.01" />
+    </div>
+    <div>
+        <label for="authorId">Author:</label>
+        <select id="authorId" name="AuthorId" required>
+            <option value="">Select Author</option>
+        </select>
+    </div>
+    <button type="submit" name="handler" value="SaveBook">Save Book</button>
+</form>
