@@ -1,0 +1,121 @@
+﻿@page
+@model books_app.Pages.LibraryModel
+@using System.Linq
+@{
+    ViewData["Title"] = "Library";
+
+    // подготовить быстрый доступ
+    var authors = Model?.Authors ?? new List<books_app.DAL.Entities.Author>();
+    var books = Model?.Books ?? new List<books_app.DAL.Entities.Book>();
+    var authorById = authors.ToDictionary(a => a.Id, a => a);
+    var bookCounts = books.GroupBy(b => b.AuthorId).ToDictionary(g => g.Key, g => g.Count());
+}
+
+<h1>Library</h1>
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <h2>Authors</h2>
+        <div class="input-group flex-nowrap">
+            <input type="text" id="authorSearch" class="form-control" placeholder="Search author..." aria-describedby="addon-wrapping">
+        </div>
+        <div class="table-responsive">
+            <table id="authorsTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Full name</th>
+                        <th>Birthdate</th>
+                        <th>Books</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (authors.Any())
+                    {
+                        foreach (var a in authors)
+                        {
+                            <tr onclick="window.location='/AuthorProfile?id=@a.Id'" style="cursor:pointer;">
+                                <td>@a.Id</td>
+                                <td>@($"{a.FirstName} {a.LastName}")</td>
+                                <td>@a.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                <td>@(bookCounts.TryGetValue(a.Id, out var c) ? c : 0)</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">No authors found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <h2>Books</h2>
+        <div class="input-group flex-nowrap">
+            <input type="text" id="bookSearch" class="form-control" placeholder="Search book..." aria-describedby="addon-wrapping">
+        </div>
+        <div class="table-responsive">
+            <table id="booksTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>ISBN</th>
+                        <th>Year</th>
+                        <th>Author</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (books.Any())
+                    {
+                        foreach (var book in books)
+                        {
+                            var authorName = authorById.TryGetValue(book.AuthorId, out var auth)
+                                ? $"{auth.FirstName} {auth.LastName}"
+                                : "Unknown";
+                            <tr onclick="window.location='/Book?id=@book.Id'" style="cursor:pointer;">
+                                <td>@book.Id</td>
+                                <td>@book.Title</td>
+                                <td>@book.ISBN</td>
+                                <td>@(book.PublishYear.Year)</td>
+                                <td>@authorName</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">No books found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#authorSearch').on('input', function() {
+                var search = $(this).val().toLowerCase();
+                $('#authorsTable tbody tr').each(function() {
+                    var name = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    $(this).toggle(name.includes(search));
+                });
+            });
+
+            $('#bookSearch').on('input', function() {
+                var search = $(this).val().toLowerCase();
+                $('#booksTable tbody tr').each(function() {
+                    var title = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    $(this).toggle(title.includes(search));
+                });
+            });
+        });
+    </script>
+}

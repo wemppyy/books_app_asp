@@ -2,7 +2,7 @@
 
 namespace books_app.Models
 {
-    public class AuthorModel
+    public class AuthorDTO
     {
         public int Id { get; set; }
 

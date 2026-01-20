@@ -1,5 +1,8 @@
+using books_app.Abstracts;
 using books_app.DAL;
 using books_app.DAL.Abstracts;
+using books_app.DAL.Repositories;
+using books_app.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace books_app
@@ -19,6 +22,9 @@ namespace books_app
 
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IBookRepository, BookRepository>();
+
+            builder.Services.AddScoped<IAuthorService, AuthorService> ();
+            builder.Services.AddScoped<IBookService, BookService>();
 
             var app = builder.Build();
 

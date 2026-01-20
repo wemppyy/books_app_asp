@@ -5,7 +5,9 @@ namespace books_app.DAL.Abstracts
     public interface IAuthorRepository
     {
         Author GetAuthorById(int authorId);
-        void AddAuthor(Author author);
+        bool AddAuthor(Author author);
+        bool UpdateAuthor(Author author);
+        bool DeleteAuthor(Author author);
         List<Author> GetAllAuthors();
     }
 }

@@ -1,0 +1,41 @@
+@page
+@model books_app.Pages.AddBookModel
+@{
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Add Book</h1>
+    <form method="post" class="mb-4">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" id="title" asp-for="Book.Title" class="form-control"/>
+            <span asp-validation-for="Book.Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="isbn" class="form-label">ISBN:</label>
+            <input type="text" id="isbn" asp-for="Book.ISBN" class="form-control"/>
+            <span asp-validation-for="Book.ISBN" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="publishYear" class="form-label">PublishYear:</label>
+            <input type="date" id="publishYear" asp-for="Book.PublishYear" class="form-control" />
+            <span asp-validation-for="Book.PublishYear" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price:</label>
+            <input type="number" id="price" asp-for="Book.Price" class="form-control"/>
+            <span asp-validation-for="Book.Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="authorId" class="form-label">Author:</label>
+            <select id="authorId" asp-for="Book.AuthorId" asp-items="Model.Authors" class="form-select">
+                <option value="">Select Author</option>
+            </select>
+            <span asp-validation-for="Book.AuthorId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Book</button>
+    </form>
+</div>
+
+<partial name="_ValidationScriptsPartial" />
