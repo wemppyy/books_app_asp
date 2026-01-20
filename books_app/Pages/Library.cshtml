@@ -46,7 +46,6 @@
     </div>
 
 <script>
-    // simple client-side search without dependencies
     (function() {
         function setupSearch(inputId, tableId, columnIndex) {
             var input = document.getElementById(inputId);
@@ -64,13 +63,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            setupSearch('authorSearch', 'authorsTable', 1); // full name column
-            setupSearch('bookSearch', 'booksTable', 1); // title column
+            setupSearch('authorSearch', 'authorsTable', 1);
+            setupSearch('bookSearch', 'booksTable', 1);
         });
     })();
 </script>
 
-<!-- move script to page bottom to ensure tables exist when script runs -->
 
     <div class="col-12 col-md-6">
         <h2>Books</h2>
