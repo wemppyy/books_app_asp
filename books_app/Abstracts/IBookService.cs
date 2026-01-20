@@ -8,6 +8,7 @@ namespace books_app.Abstracts
     {
         bool Add(BookDTO bookDto);
         bool Update(BookDTO bookDto);
+        bool Delete(BookDTO bookDto);
         BookDTO GetById(int id);
         List<Book> GetAll();
     }

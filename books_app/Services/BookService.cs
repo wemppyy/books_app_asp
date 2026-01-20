@@ -59,5 +59,19 @@ namespace books_app.Services
             };
             return _bookRepository.UpdateBook(book);
         }
+
+        public bool Delete(BookDTO bookDto) {
+            var book = new Book
+            {
+                Id = bookDto.Id,
+                Title = bookDto.Title,
+                ISBN = bookDto.ISBN,
+                PublishYear = bookDto.PublishYear,
+                Price = bookDto.Price,
+                AuthorId = bookDto.AuthorId
+            };
+
+            return _bookRepository.DeleteBook(book);
+        }
     }
 }

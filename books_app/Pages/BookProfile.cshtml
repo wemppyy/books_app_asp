@@ -1,0 +1,71 @@
+﻿@page
+@model books_app.Pages.BookProfileModel
+@{
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0 display-6">Book Profile</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row gx-5">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled mb-0">
+                                <li class="py-3 d-flex justify-content-between border-bottom">
+                                    <strong class="text-muted">Id</strong>
+                                    <span>@Model.Book.Id</span>
+                                </li>
+                                <li class="py-3 d-flex justify-content-between border-bottom">
+                                    <strong class="text-muted">Title</strong>
+                                    <span class="text-break text-end">@Html.Raw(System.Net.WebUtility.HtmlEncode(Model?.Book?.Title ?? ""))</span>
+                                </li>
+                                <li class="py-3 d-flex justify-content-between border-bottom">
+                                    <strong class="text-muted">ISBN</strong>
+                                    <span>@(Model.Book.ISBN ?? "")</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-6">
+                            <ul class="list-unstyled mb-0">
+                                <li class="py-3 d-flex justify-content-between border-bottom">
+                                    <strong class="text-muted">Publish Year</strong>
+                                    <span>@(Model != null && Model.Book.PublishYear != default(DateTime) ? Model.Book.PublishYear.ToString("yyyy") : "—")</span>
+                                </li>
+                                <li class="py-3 d-flex justify-content-between border-bottom">
+                                    <strong class="text-muted">Price</strong>
+                                    <span>@(Model.Book.Price ?? "—")</span>
+                                </li>
+                                <li class="py-3 d-flex justify-content-between border-bottom">
+                                    <strong class="text-muted">Author</strong>
+                                    <span>
+                                        @if (Model.Book.AuthorId > 0)
+                                        {
+                                            <a href="/AuthorProfile?id=@Model.Book.AuthorId">@Model.AuthorName</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No author</span>
+                                        }
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-primary flex-fill" href="/Book?id=@Model.BookId">Edit</a>
+                        <form method="post" asp-page-handler="Delete" class="flex-fill" style="margin:0">
+                            <input type="hidden" asp-for="Book.Id" />
+                            <input type="hidden" name="id" value="@Model.Book?.Id" />
+                            <button type="submit" class="btn btn-danger w-100">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

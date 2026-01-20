@@ -1,14 +1,6 @@
 ﻿@page
 @model books_app.Pages.LibraryModel
-@using System.Linq
 @{
-    ViewData["Title"] = "Library";
-
-    // подготовить быстрый доступ
-    var authors = Model?.Authors ?? new List<books_app.DAL.Entities.Author>();
-    var books = Model?.Books ?? new List<books_app.DAL.Entities.Book>();
-    var authorById = authors.ToDictionary(a => a.Id, a => a);
-    var bookCounts = books.GroupBy(b => b.AuthorId).ToDictionary(g => g.Key, g => g.Count());
 }
 
 <h1>Library</h1>
@@ -16,8 +8,8 @@
 <div class="row">
     <div class="col-12 col-md-6">
         <h2>Authors</h2>
-        <div class="input-group flex-nowrap">
-            <input type="text" id="authorSearch" class="form-control" placeholder="Search author..." aria-describedby="addon-wrapping">
+        <div class="input-group mb-2">
+            <input type="text" id="authorSearch" class="form-control" placeholder="Search authors..." />
         </div>
         <div class="table-responsive">
             <table id="authorsTable" class="table table-striped">
@@ -30,15 +22,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (authors.Any())
+                    @if (Model?.Authors?.Any() == true)
                     {
-                        foreach (var a in authors)
+                        foreach (var a in Model.Authors)
                         {
                             <tr onclick="window.location='/AuthorProfile?id=@a.Id'" style="cursor:pointer;">
                                 <td>@a.Id</td>
                                 <td>@($"{a.FirstName} {a.LastName}")</td>
                                 <td>@a.DateOfBirth.ToString("yyyy-MM-dd")</td>
-                                <td>@(bookCounts.TryGetValue(a.Id, out var c) ? c : 0)</td>
+                                <td>@(Model?.Books?.Count(b => b.AuthorId == a.Id) ?? 0)</td>
                             </tr>
                         }
                     }
@@ -53,10 +45,37 @@
         </div>
     </div>
 
+<script>
+    // simple client-side search without dependencies
+    (function() {
+        function setupSearch(inputId, tableId, columnIndex) {
+            var input = document.getElementById(inputId);
+            var table = document.getElementById(tableId);
+            if (!input || !table) return;
+            input.addEventListener('input', function() {
+                var q = input.value.trim().toLowerCase();
+                var rows = table.tBodies[0].rows;
+                for (var i = 0; i < rows.length; i++) {
+                    var cell = rows[i].cells[columnIndex];
+                    var text = cell ? cell.innerText.toLowerCase() : '';
+                    rows[i].style.display = text.indexOf(q) !== -1 ? '' : 'none';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupSearch('authorSearch', 'authorsTable', 1); // full name column
+            setupSearch('bookSearch', 'booksTable', 1); // title column
+        });
+    })();
+</script>
+
+<!-- move script to page bottom to ensure tables exist when script runs -->
+
     <div class="col-12 col-md-6">
         <h2>Books</h2>
-        <div class="input-group flex-nowrap">
-            <input type="text" id="bookSearch" class="form-control" placeholder="Search book..." aria-describedby="addon-wrapping">
+        <div class="input-group mb-2">
+            <input type="text" id="bookSearch" class="form-control" placeholder="Search books..." />
         </div>
         <div class="table-responsive">
             <table id="booksTable" class="table table-striped">
@@ -70,19 +89,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (books.Any())
+                    @if (Model?.Books?.Any() == true)
                     {
-                        foreach (var book in books)
+                        foreach (var book in Model.Books)
                         {
-                            var authorName = authorById.TryGetValue(book.AuthorId, out var auth)
-                                ? $"{auth.FirstName} {auth.LastName}"
-                                : "Unknown";
-                            <tr onclick="window.location='/Book?id=@book.Id'" style="cursor:pointer;">
+                            <tr onclick="window.location='/BookProfile?id=@book.Id'" style="cursor:pointer;">
                                 <td>@book.Id</td>
                                 <td>@book.Title</td>
                                 <td>@book.ISBN</td>
                                 <td>@(book.PublishYear.Year)</td>
-                                <td>@authorName</td>
+                                <td>@book.AuthorId</td>
                             </tr>
                         }
                     }
@@ -97,25 +113,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            $('#authorSearch').on('input', function() {
-                var search = $(this).val().toLowerCase();
-                $('#authorsTable tbody tr').each(function() {
-                    var name = $(this).find('td:nth-child(2)').text().toLowerCase();
-                    $(this).toggle(name.includes(search));
-                });
-            });
-
-            $('#bookSearch').on('input', function() {
-                var search = $(this).val().toLowerCase();
-                $('#booksTable tbody tr').each(function() {
-                    var title = $(this).find('td:nth-child(2)').text().toLowerCase();
-                    $(this).toggle(title.includes(search));
-                });
-            });
-        });
-    </script>
-}

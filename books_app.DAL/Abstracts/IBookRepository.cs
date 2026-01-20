@@ -6,6 +6,7 @@ namespace books_app.DAL.Abstracts
     {
         bool AddBook(Book book);
         bool UpdateBook(Book book);
+        bool DeleteBook(Book book);
         Book GetBookById(int bookId);
         List<Book> GetAllBooks();
     }

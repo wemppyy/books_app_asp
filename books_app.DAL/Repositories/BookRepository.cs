@@ -43,5 +43,25 @@ namespace books_app.DAL.Repositories
             _db.SaveChanges();
             return true;
         }
+
+        public bool DeleteBook(Book book)
+        {
+            var existingBook = _db.Books.FirstOrDefault(x => x.Id == book.Id);
+            if (existingBook == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                _db.Books.Remove(existingBook);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
